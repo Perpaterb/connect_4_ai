@@ -20,10 +20,10 @@ def print_board(board)
                     puts " | "
                     wall = 0
                 end
-            when "1"
-                print " 1 ".red
-            when "2"
-                print " 2 ".green
+            when "C"
+                print " C ".red
+            when "H"
+                print " H ".green
             end
         end
        

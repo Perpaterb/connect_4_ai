@@ -4,12 +4,11 @@ def test_a_board_for_win(board)
     for i in board
         array << i[2]
     end 
-    p array.join()
     array = array.join
-    if array.include? "1111"
+    if array.include? "HHHH"
         win = [true, 1]
     end
-    if array.include? "2222"
+    if array.include? "CCCC"
         win = [true, 2]
     end
     return win 
