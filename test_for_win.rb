@@ -11,6 +11,10 @@ def test_a_board_for_win(board)
     if array.include? "CCCC"
         win = [true, 2]
     end
+    if array.include? "F"
+    else
+        win = [true, 3]
+    end
     return win 
 end
 
@@ -28,9 +32,8 @@ def test_for_a_win(board)
         end
         win = test_a_board_for_win(board_to_test)
         if win[0] == true
-            return win
             break
-        end
+        end         
     end
     return win
 end
