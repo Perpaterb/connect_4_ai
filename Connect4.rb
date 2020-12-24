@@ -6,6 +6,7 @@ require "./test_for_next_turn_win"
 require "./minimax.rb"
 require "./move_made_update_board.rb"
 require "./is_pos_avalible.rb"
+require "./test_for_score.rb"
 
 gamestate = "running"
 if rand(1..2) == 2
@@ -36,19 +37,35 @@ while gamestate == "running"
     case turn_of
     when "computer"
         # AI time
-        best_score = -99999
-        best_move = 1
-        for i in 1..7
-            avalible = is_pos_avalible(i, board)
-            if avalible[0] == 1
-                score = minimax(i, 4, 0, 0, true)
-                if score > best_score
-                    best_score = score
-                    best_move = i
-                    best_move_row = avalible[1]
-                end
+        win_q = test_for_next_turn_win(board, "C")
+        if win_q[0] != true
+            win_q = test_for_next_turn_win(board, "H")
+            if win_q[0] != true
+                best_score = -99999
+                best_move = 1
+                for i in 1..7
+                    avalible = is_pos_avalible(i, board)
+                    if avalible[0] == 1
+                        move_row = avalible[1]
+                        board_for_score = move_made_update_board(i, turn_of, board, move_row)
+                        score = minimax(board_for_score, 5, -9999, 9999, true)
+                        if score > best_score
+                            best_score = score
+                            best_move = i
+                            best_move_row = avalible[1]
+                        end
+                    end
+                end 
+            else
+                best_move = win_q[1]
+                avalible = is_pos_avalible(best_move, board)
+                best_move_row = avalible[1]
             end
-        end 
+        else
+            best_move = win_q[1]
+            avalible = is_pos_avalible(best_move, board)
+            best_move_row = avalible[1]
+        end
         board = move_made_update_board(best_move, turn_of, board, best_move_row)
         turn_of = "human"
     when "human"

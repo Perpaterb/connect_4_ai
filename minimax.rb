@@ -1,14 +1,9 @@
-score = {
-    1 => -1,
-    2 => 1,
-    3 => 0 
-}
-
+require "./test_for_score.rb"
 
 def minimax(board, tree_depth, alpha, beta, maximizingPlayer)
     return 1
     
-    
+    score = test_for_score(board)
     # if tree_depth == 0
     #     return #evaluation of board
     

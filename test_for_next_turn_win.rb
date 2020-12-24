@@ -16,6 +16,14 @@ def test_a_board_for_win_next_turn(board_to_test, player)
         where = array.index("#{player}#{player}#{player}A")
         win_next_turn = [true, array_pos[where+3]]
     end
+    if array.include? "#{player}#{player}A#{player}"
+        where = array.index("#{player}#{player}A#{player}")
+        win_next_turn = [true, array_pos[where+2]]
+    end
+    if array.include? "#{player}A#{player}#{player}"
+        where = array.index("#{player}A#{player}#{player}")
+        win_next_turn = [true, array_pos[where+1]]
+    end
     return win_next_turn 
 end
 
