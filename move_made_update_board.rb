@@ -11,6 +11,5 @@ def move_made_update_board(p_move, turn_of, board, row)
     else
         board[new_a] = [row+1, p_move, "A"]
     end
-
     return board
 end

@@ -19,7 +19,7 @@ board = create_blank_board()
 
 
 while gamestate == "running"
-    puts `clear`
+    #puts `clear`
     print_board(board)
     win = test_for_a_win(board)
     if win[0] == true
@@ -41,14 +41,14 @@ while gamestate == "running"
         if win_q[0] != true
             win_q = test_for_next_turn_win(board, "H")
             if win_q[0] != true
-                best_score = -99999
+                best_score = -1.0/0.0
                 best_move = 1
                 for i in 1..7
                     avalible = is_pos_avalible(i, board)
                     if avalible[0] == 1
                         move_row = avalible[1]
-                        board_for_score = move_made_update_board(i, turn_of, board, move_row)
-                        score = minimax(board_for_score, 5, -9999, 9999, true)
+                        board_for_score = move_made_update_board(i, turn_of, board.clone, move_row)
+                        score = minimax(board_for_score, 1, -1.0/0.0, +1.0/0.0, true)
                         if score > best_score
                             best_score = score
                             best_move = i

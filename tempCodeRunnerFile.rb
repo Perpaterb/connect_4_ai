@@ -1,0 +1,1 @@
+p test_for_score(board)

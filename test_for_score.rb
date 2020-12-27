@@ -31,6 +31,13 @@ def test_a_board_for_score(board, total_scroe)
     if array.include? "ACCC"
         score += 100
     end
+    # CHHA
+    if array.include? "CHHA"
+        score += 140
+    end
+    if array.include? "AHHC"
+        score += 145
+    end
     # HHHF
     if array.include? "CCCF"
         score += 40
@@ -385,8 +392,7 @@ def test_for_score(board)
         when 3
             board_to_test = func_board_by_right_diag(board.clone)
         end
-        total_scroe = test_a_board_for_win(board_to_test)
-        answer = answer + total_scroe      
+        answer += test_a_board_for_score(board_to_test, answer) 
     end
     return answer
 end
