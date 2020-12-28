@@ -3,8 +3,8 @@ require "./is_pos_avalible.rb"
 require "./move_made_update_board.rb"
 require "./test_for_win.rb"
 
-def minimax(board, tree_depth, alpha, beta, maximizingPlayer)
-    win_Q = test_for_a_win(board)
+def minimax(board_for_score, board_for_move, tree_depth, alpha, beta, maximizingPlayer)
+    win_Q = test_for_a_win(board_for_move.clone)
     if win_Q[0] == true
         case win_Q[1]
         when 1
@@ -18,19 +18,19 @@ def minimax(board, tree_depth, alpha, beta, maximizingPlayer)
     end
     
     if tree_depth == 0
-        score = test_for_score(board)
-        p score
+        score = test_for_score(board_for_score.clone)
         return score
     end
     
     if maximizingPlayer == true
         maxEval = -1.0/0.0
         for i in 1..7
-            avalible = is_pos_avalible(i, board.clone)
+            avalible = is_pos_avalible(i, board_for_move.clone)
             if avalible[0] == 1
                 move_row = avalible[1]
-                board_for_score = move_made_update_board(i, "computer", board, move_row)
-                score = minimax(board_for_score, tree_depth-1, alpha, beta, false)
+                board_for_score = make_board_for_score_test(i, "computer", board_for_move.clone, move_row)
+                board_for_move = move_made_update_board(i, "computer", board_for_move.clone, move_row)
+                score = minimax(board_for_score, board_for_move, tree_depth-1, alpha, beta, false)
                 maxEval = [maxEval, score].max
                 alpha = [alpha, score].max
                 if beta <= alpha
@@ -42,11 +42,12 @@ def minimax(board, tree_depth, alpha, beta, maximizingPlayer)
     else
         minEval = +1.0/0.0
         for i in 1..7
-            avalible = is_pos_avalible(i, board.clone)
+            avalible = is_pos_avalible(i, board_for_move.clone)
             if avalible[0] == 1
                 move_row = avalible[1]
-                board_for_score = move_made_update_board(i, "human", board, move_row)
-                score = minimax(board_for_score, tree_depth-1, alpha, beta, true)
+                board_for_score = make_board_for_score_test(i, "human", board_for_move.clone, move_row)
+                board_for_move = move_made_update_board(i, "human", board_for_move.clone, move_row)
+                score = minimax(board_for_score, board_for_move,  tree_depth-1, alpha, beta, true)
                 minEval = [minEval, score].min
                 alpha = [alpha, score].min
                 if beta <= alpha

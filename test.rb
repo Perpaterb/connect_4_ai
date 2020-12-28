@@ -1,3 +1,9 @@
-maxEval = -1.0/0.0 
-score = 323
-p [maxEval, score].max
+arr = "HHHC".chars.permutation.to_a
+answer = []
+for i in arr 
+    if answer.include?(i)
+    else
+        answer << i
+    end
+end
+p answer

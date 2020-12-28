@@ -1,6 +1,7 @@
 class String
     def red;            "\033[31m#{self}\033[0m" end
     def green;          "\033[32m#{self}\033[0m" end
+    def blue;           "\033[34m#{self}\033[0m" end
 end
 
 def print_board(board)
@@ -21,9 +22,13 @@ def print_board(board)
                     wall = 0
                 end
             when "C"
-                print " C ".red
+                print " C ".blue
             when "H"
                 print " H ".green
+            when "c"
+                print " E ".red
+            when "h"
+                print " E ".red
             end
         end
        
