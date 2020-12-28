@@ -7,6 +7,7 @@ require "./minimax.rb"
 require "./move_made_update_board.rb"
 require "./is_pos_avalible.rb"
 require "./test_for_score.rb"
+require "./known_boards.rb"
 
 gamestate = "running"
 if rand(1..2) == 2
@@ -19,7 +20,7 @@ board = create_blank_board()
 
 
 while gamestate == "running"
-    #puts `clear`
+    puts `clear`
     print_board(board)
     win = test_for_a_win(board)
     if win[0] == true
@@ -41,21 +42,28 @@ while gamestate == "running"
         if win_q[0] != true
             win_q = test_for_next_turn_win(board, "H")
             if win_q[0] != true
-                best_score = -1.0/0.0
-                best_move = 1
-                for i in 1..7
-                    avalible = is_pos_avalible(i, board)
-                    if avalible[0] == 1
-                        move_row = avalible[1]
-                        board_for_score = move_made_update_board(i, turn_of, board.clone, move_row)
-                        score = minimax(board_for_score, 1, -1.0/0.0, +1.0/0.0, true)
-                        if score > best_score
-                            best_score = score
-                            best_move = i
-                            best_move_row = avalible[1]
+                known = is_in_known_boards(board)
+                if known[0] == true
+                    best_move = known[1]
+                    best_move_row = known[2]
+                else
+                    best_score = -1.0/0.0
+                    best_move = 1
+                    for i in 1..7
+                        avalible = is_pos_avalible(i, board)
+                        if avalible[0] == 1
+                            move_row = avalible[1]
+                            board_for_score = make_board_for_score_test(i, turn_of, board.clone, move_row)
+                            board_for_move = move_made_update_board(i, turn_of, board.clone, move_row)
+                            score = minimax(board_for_score, board_for_move, 3, -1.0/0.0, +1.0/0.0, false)
+                            if score > best_score
+                                best_score = score
+                                best_move = i
+                                best_move_row = avalible[1]
+                            end
                         end
                     end
-                end 
+                end
             else
                 best_move = win_q[1]
                 avalible = is_pos_avalible(best_move, board)
@@ -66,6 +74,10 @@ while gamestate == "running"
             avalible = is_pos_avalible(best_move, board)
             best_move_row = avalible[1]
         end
+        p best_move
+        p turn_of
+        p board
+        p best_move_row
         board = move_made_update_board(best_move, turn_of, board, best_move_row)
         turn_of = "human"
     when "human"
