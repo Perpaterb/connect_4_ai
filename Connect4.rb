@@ -1,88 +1,89 @@
-def create_blank_board()
-    board = []
-    # 7 by 7 board
-    for a in 0..8
-        for b in 0..8
-            if a == 0 or a == 8 or b == 0 or b == 8
-                board << [a,b,"W"]
-            elsif a == 1 and (1..7).include? b
-                board << [a,b,"A"]
-            else
-                board << [a,b,"F"]
-            end
-        end
-    end
-    return board
+require "./create_blank_board.rb"
+require "./rotate_board2.rb"
+require "./print_board_to_screen.rb"
+require "./test_for_win.rb"
+require "./test_for_next_turn_win"
+require "./minimax.rb"
+require "./move_made_update_board.rb"
+require "./is_pos_avalible.rb"
+require "./test_for_score.rb"
+
+gamestate = "running"
+if rand(1..2) == 2
+    turn_of = "computer"
+else
+    turn_of = "human"
 end
-
-#     board_by_up_right_diag = func_board_by_right_diag(board)
-#     board_by_down_right_diag = board_by_up_right_diag.clone.reverse()
-#     board_by_up_left_diag = func_board_by_left_diag(board)
-#     board_by_down_left_diag = board_by_up_left_diag.clone.reverse()
-
-def func_board_by_column(board)
-    out_array = []
-    start = 0
-    for a in 0..8
-        start = 0
-        for b in 0..8
-            out_array << board[a + start]
-            start = start + 9
-        end
-    end
-    return out_array
-end
-
-def func_board_by_left_diag(board)
-    out_array = []
-    out_array_indexes = []
-    start = 0
-    up = true
-    c = 0
-    while out_array.length <= 80
-        a = 0
-        if up == true
-            for b in 0..start
-                out_array << board[a + b + c]
-                out_array_indexes << a + b + c
-                a = a + 7
-            end
-            c = c + 1
-            start = start + 1
-        else
-            for b in 0..start
-                out_array << board[a + b + c]
-                out_array_indexes << a + b + c
-                a = a + 7
-            end
-            c = c + 9
-            start = start - 1
-        end
-
-        if start == 9
-            start = start - 2
-            up = false
-            c = c + 8
-        end
-    end 
-    p out_array_indexes 
-    return out_array
-end
-
-def func_board_by_right_diag(board)
-
-end
-
-
-
+message = ""
 board = create_blank_board()
-board_by_row_forward = board.clone
-board_by_row_backward = board.clone.reverse()
-board_by_column = func_board_by_column(board)
-board_by_up_left_diag = func_board_by_left_diag(board)
-board_by_down_left_diag = board_by_up_left_diag.clone.reverse()
 
 
-# p board_by_row_forward
-# p board_by_column
-p board_by_up_left_diag
+while gamestate == "running"
+    #puts `clear`
+    print_board(board)
+    win = test_for_a_win(board)
+    if win[0] == true
+        turn_of = 0
+        case win[1]
+        when 1
+            puts "Player wins!!"
+        when 2
+            puts "Computer wins!!"
+        when 3
+            puts "Tie!!"
+        end
+        exit
+    end
+    case turn_of
+    when "computer"
+        # AI time
+        win_q = test_for_next_turn_win(board, "C")
+        if win_q[0] != true
+            win_q = test_for_next_turn_win(board, "H")
+            if win_q[0] != true
+                best_score = -1.0/0.0
+                best_move = 1
+                for i in 1..7
+                    avalible = is_pos_avalible(i, board)
+                    if avalible[0] == 1
+                        move_row = avalible[1]
+                        board_for_score = move_made_update_board(i, turn_of, board.clone, move_row)
+                        score = minimax(board_for_score, 1, -1.0/0.0, +1.0/0.0, true)
+                        if score > best_score
+                            best_score = score
+                            best_move = i
+                            best_move_row = avalible[1]
+                        end
+                    end
+                end 
+            else
+                best_move = win_q[1]
+                avalible = is_pos_avalible(best_move, board)
+                best_move_row = avalible[1]
+            end
+        else
+            best_move = win_q[1]
+            avalible = is_pos_avalible(best_move, board)
+            best_move_row = avalible[1]
+        end
+        board = move_made_update_board(best_move, turn_of, board, best_move_row)
+        turn_of = "human"
+    when "human"
+        print "#{message} Select 1 - 7 to make a move: "
+        p_move = gets.chomp.to_i
+        if (1..7).include? p_move
+            avalible = is_pos_avalible(p_move, board)
+            if avalible[0] == 1
+                board = move_made_update_board(p_move, turn_of, board, avalible[1])
+                turn_of = "computer"
+                message = ""
+            else
+                message = "Position not avalible!! Enter another position.. "
+            end
+        else
+            message = "invalid move!! please try again.. "
+        end
+    end
+end
+
+#win_next_turn = test_for_next_turn_win(board, "C")
